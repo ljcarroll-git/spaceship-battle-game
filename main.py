@@ -33,7 +33,7 @@ YELLOW_SPACESHIP_IMAGE = pygame.image.load(
 YELLOW_SPACESHIP = pygame.transform.rotate(
     pygame.transform.scale(YELLOW_SPACESHIP_IMAGE, (SPACESHIP_WIDTH, SPACESHIP_HEIGHT)),
     90)
-
+    
 RED_SPACESHIP_IMAGE = pygame.image.load(
     os.path.join('Assets', 'spaceship_red.png'))
 RED_SPACESHIP = pygame.transform.rotate(
@@ -72,21 +72,21 @@ def draw_window(red, yellow, red_bullets, yellow_bullets, red_health, yellow_hea
 def handle_yellow_movement(keys_pressed, yellow):
     if keys_pressed[pygame.K_a] and yellow.x - VELOCITY > 0:  # LEFT
         yellow.x -= VELOCITY
-    if keys_pressed[pygame.K_d] and yellow.x + VELOCITY + yellow.width < BORDER.x + 10:  # RIGHT
+    if keys_pressed[pygame.K_d] and yellow.x + VELOCITY + yellow.height < BORDER.x:  # RIGHT
         yellow.x += VELOCITY
     if keys_pressed[pygame.K_w] and yellow.y - VELOCITY > 0:  # UP
         yellow.y -= VELOCITY
-    if keys_pressed[pygame.K_s] and yellow.y + VELOCITY + yellow.height < WINDOW_HEIGHT - 10:  # DOWN
+    if keys_pressed[pygame.K_s] and yellow.y + VELOCITY + yellow.width < WINDOW_HEIGHT:  # DOWN
         yellow.y += VELOCITY
 
 def handle_red_movement(keys_pressed, red):
     if keys_pressed[pygame.K_LEFT] and red.x - VELOCITY > BORDER.x + BORDER.width:
         red.x -= VELOCITY
-    if keys_pressed[pygame.K_RIGHT] and red.x + VELOCITY + red.width < WINDOW_WIDTH + 10:
+    if keys_pressed[pygame.K_RIGHT] and red.x + VELOCITY + red.height < WINDOW_WIDTH:
         red.x += VELOCITY
     if keys_pressed[pygame.K_UP] and red.y - VELOCITY > 0:
         red.y -= VELOCITY
-    if keys_pressed[pygame.K_DOWN] and red.y + VELOCITY + red.height < WINDOW_HEIGHT - 10:
+    if keys_pressed[pygame.K_DOWN] and red.y + VELOCITY + red.width < WINDOW_HEIGHT:
         red.y += VELOCITY
 
 def handle_bullets(yellow_bullets, red_bullets, yellow, red):
@@ -112,10 +112,10 @@ def draw_winner(text):
                         WINDOW_HEIGHT//2 - draw_text.get_height()//2))
 
     pygame.display.update()
-    pygame.time.delay(5000)
-    pygame.event.clear()   
+    pygame.time.delay(5000)   
 
 def main():
+    pygame.event.clear()
     yellow = pygame.Rect(300, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
     red = pygame.Rect(700, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
     yellow_bullets = []
