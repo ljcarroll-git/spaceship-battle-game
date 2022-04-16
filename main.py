@@ -3,7 +3,7 @@ import os
 pygame.font.init()
 pygame.mixer.init()
 
-WIN_WIDTH, WIN_HEIGHT = 1000, 600
+WINDOW_WIDTH, WINDOW_HEIGHT = 1000, 600
 BLUE = (0,0,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
@@ -11,12 +11,13 @@ YELLOW = (255,255,0)
 WHITE = (255,255,255)
 FPS = 60
 VELOCITY = 5
-BULLET_VELOCITY = 8
+BULLET_VELOCITY = 20
 BULLET_WIDTH, BULLET_HEIGHT = 10, 5
 SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 50, 41.3
 MAX_BULLETS = 4
 BORDER_WIDTH = 10
-BORDER = pygame.Rect(WIN_WIDTH//2 - BORDER_WIDTH//2, 0, BORDER_WIDTH, WIN_HEIGHT)
+GAME_CAPTION = "Space Battle"
+BORDER = pygame.Rect(WINDOW_WIDTH//2 - BORDER_WIDTH//2, 0, BORDER_WIDTH, WINDOW_HEIGHT)
 
 HEALTH_FONT = pygame.font.SysFont("arial", 40)
 WINNER_FONT = pygame.font.SysFont("arial", 100)
@@ -36,35 +37,35 @@ YELLOW_SPACESHIP = pygame.transform.rotate(
 RED_SPACESHIP_IMAGE = pygame.image.load(
     os.path.join('Assets', 'spaceship_red.png'))
 RED_SPACESHIP = pygame.transform.rotate(
-    pygame.transform.scale(YELLOW_SPACESHIP_IMAGE, (SPACESHIP_WIDTH, SPACESHIP_HEIGHT)),
+    pygame.transform.scale(RED_SPACESHIP_IMAGE, (SPACESHIP_WIDTH, SPACESHIP_HEIGHT)),
     270)
 
-SPACE = pygame.transform.scale(
-    pygame.image.load(os.path.join('Assets', 'space.png')),
-    (WIN_WIDTH, WIN_HEIGHT))
+SPACE_IMAGE = pygame.transform.scale(
+    pygame.image.load(os.path.join('Assets', 'space_2.jpg')),
+    (WINDOW_WIDTH, WINDOW_HEIGHT))
 
-WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-pygame.display.set_caption("My First Game")
+WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+pygame.display.set_caption(GAME_CAPTION)
 
 def draw_window(red, yellow, red_bullets, yellow_bullets, red_health, yellow_health):
-    WIN.blit(SPACE, (0,0))
-    pygame.draw.rect(WIN, BLACK, BORDER)
+    WINDOW.blit(SPACE_IMAGE, (0,0))
+    pygame.draw.rect(WINDOW, BLACK, BORDER)
     
     red_health_text = HEALTH_FONT.render(
         f"Health: {red_health}", 1, WHITE)
     yellow_health_text = HEALTH_FONT.render(
         f"Health: {yellow_health}", 1, WHITE)
 
-    WIN.blit(red_health_text, (WIN_WIDTH - red_health_text.get_width() - 10, 10))
-    WIN.blit(yellow_health_text, (10, 10))
-    WIN.blit(YELLOW_SPACESHIP, (yellow.x, yellow.y))
-    WIN.blit(RED_SPACESHIP, (red.x, red.y))
+    WINDOW.blit(red_health_text, (WINDOW_WIDTH - red_health_text.get_width() - 10, 10))
+    WINDOW.blit(yellow_health_text, (10, 10))
+    WINDOW.blit(YELLOW_SPACESHIP, (yellow.x, yellow.y))
+    WINDOW.blit(RED_SPACESHIP, (red.x, red.y))
 
     for bullet in red_bullets:
-        pygame.draw.rect(WIN, RED, bullet)
+        pygame.draw.rect(WINDOW, RED, bullet)
     
     for bullet in yellow_bullets:
-        pygame.draw.rect(WIN, YELLOW, bullet)
+        pygame.draw.rect(WINDOW, YELLOW, bullet)
     
     pygame.display.update()
 
@@ -75,17 +76,17 @@ def handle_yellow_movement(keys_pressed, yellow):
         yellow.x += VELOCITY
     if keys_pressed[pygame.K_w] and yellow.y - VELOCITY > 0:  # UP
         yellow.y -= VELOCITY
-    if keys_pressed[pygame.K_s] and yellow.y + VELOCITY + yellow.height < WIN_HEIGHT - 10:  # DOWN
+    if keys_pressed[pygame.K_s] and yellow.y + VELOCITY + yellow.height < WINDOW_HEIGHT - 10:  # DOWN
         yellow.y += VELOCITY
 
 def handle_red_movement(keys_pressed, red):
     if keys_pressed[pygame.K_LEFT] and red.x - VELOCITY > BORDER.x + BORDER.width:
         red.x -= VELOCITY
-    if keys_pressed[pygame.K_RIGHT] and red.x + VELOCITY + red.width < WIN_WIDTH + 10:
+    if keys_pressed[pygame.K_RIGHT] and red.x + VELOCITY + red.width < WINDOW_WIDTH + 10:
         red.x += VELOCITY
     if keys_pressed[pygame.K_UP] and red.y - VELOCITY > 0:
         red.y -= VELOCITY
-    if keys_pressed[pygame.K_DOWN] and red.y + VELOCITY + red.height < WIN_HEIGHT - 10:
+    if keys_pressed[pygame.K_DOWN] and red.y + VELOCITY + red.height < WINDOW_HEIGHT - 10:
         red.y += VELOCITY
 
 def handle_bullets(yellow_bullets, red_bullets, yellow, red):
@@ -94,7 +95,7 @@ def handle_bullets(yellow_bullets, red_bullets, yellow, red):
         if red.colliderect(bullet):
             pygame.event.post(pygame.event.Event(RED_HIT))
             yellow_bullets.remove(bullet)
-        elif bullet.x > WIN_WIDTH:
+        elif bullet.x > WINDOW_WIDTH:
             yellow_bullets.remove(bullet)
     
     for bullet in red_bullets:
@@ -107,11 +108,12 @@ def handle_bullets(yellow_bullets, red_bullets, yellow, red):
 
 def draw_winner(text):
     draw_text = WINNER_FONT.render(text, 1, WHITE)
-    WIN.blit(draw_text, (WIN_WIDTH//2 - draw_text.get_width()//2,
-                        WIN_HEIGHT//2 - draw_text.get_height()//2))
+    WINDOW.blit(draw_text, (WINDOW_WIDTH//2 - draw_text.get_width()//2,
+                        WINDOW_HEIGHT//2 - draw_text.get_height()//2))
 
     pygame.display.update()
     pygame.time.delay(5000)
+    pygame.event.clear()   
 
 def main():
     yellow = pygame.Rect(300, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
@@ -172,10 +174,8 @@ def main():
         handle_red_movement(keys_pressed, red)
         handle_bullets(yellow_bullets, red_bullets, yellow, red)
         draw_window(red, yellow, red_bullets, yellow_bullets, red_health, yellow_health)
-        
+     
     main()
-
-
 
 if __name__ == "__main__":
     main()
